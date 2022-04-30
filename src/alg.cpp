@@ -1,41 +1,54 @@
-/#include <cstdint>
-#include "alg.h"
-double pown(double value, uint16_t n) {
-  double res = value;
-  if (n == 0) return 1;
-  if (n == 1) return value;
-  res *= pown(value, n - 1);
-  return res;
-}
-uint64_t fact(uint16_t n) {
-  uint64_t res = n;
-  if (n == 0) return 1;
-  res *= fact(n - 1);
-  return res;
-}
-double calcItem(double x, uint16_t n) {
-  double res = 0;
-  res = pown(x, n) / fact(n);
-  return res;
-}
-double expn(double x, uint16_t count) {
-  double e = 0;
-  for (uint16_t j = 0; j <= count; j++) {
-    e += calcItem(x, j);
+int countPairs1(int *arr, int len, int value) {
+  int count = 0;
+  for (int i = 0; i < len; i++) {
+    for (int j = i + 1; j < len; j++) {
+      if (arr[i] + arr[j] == value) {
+        count++;
+      }
+    }
   }
-  return e;
+  return count;
 }
-double sinn(double x, uint16_t count) {
-  double sin = 0;
-  for (uint16_t j = 1; j <= count; j++) {
-    sin += pown(-1, j - 1) * calcItem(x, 2 * j - 1);
+int countPairs2(int *arr, int len, int value) 
+  int count = 0;
+  for (int i = 0; i < len; i++) {
+    if (arr[i] <= value) {
+      for (int j = i + 1; j < len - 1; j++) {
+        if (arr[i] + arr[j] == value) {
+          count++;
+        }
+      }
+    }
   }
-  return sin;
+  return count;
 }
-double cosn(double x, uint16_t count) {
-  double cos = 0;
-  for (uint16_t j = 1; j <= count; j++) 
-    cos += pown(-1, j - 1) * calcItem(x, 2 * j - 2);
+int cbinsearch(int* arr, int left, int len, int value) {
+  int count = 0, i = left, j = len - 1, mid, x;
+  while (i <= j) {
+    mid = i + (j - i) / 2;
+    if (arr[mid] == value && mid != left && mid != len) {
+      count++;
+      x = mid;
+      while (arr[--mid] == value && mid > left) {
+        count++;
+      }
+      while (arr[++x] == value && x < len) {
+        count++;
+      }
+      return count;
+    } else if (arr[mid] > value) {
+      j = mid - 1;
+    } else {
+      i = mid + 1;
+    }
   }
-  return cos;
+  return 0;;
+}
+
+int countPairs3(int *arr, int len, int value) {
+  int count = 0;
+  for (int i = 0; i < len; i++) {
+    count += cbinsearch(arr, i, len, value - arr[i]);
+  }
+  return count;
 }
