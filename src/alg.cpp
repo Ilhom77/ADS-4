@@ -1,45 +1,54 @@
 // Copyright 2021 NNTU-CS
 int countPairs1(int *arr, int len, int value) {
-    int count = 0;
-    for (int ar1 = 0; ar1 < len - 1; ar1++) {
-        for (int ar2 = ar1 + 1; ar2 < len; ar2++) {
-            if (arr[ar1] + arr[ar2] == value) {
-                count++;
-            } else {
-                continue;
-            }
-        }
+  int count = 0;
+  for (int i = 0; i < len; i++) {
+    for (int j = i + 1; j < len; j++) {
+      if (arr[i] + arr[j] == value) {
+        count++;
+      }
     }
-       return count;
+  }
+  return count;
 }
 int countPairs2(int *arr, int len, int value) {
-    int count = 0;
-    for (int i = 0; i < len - 1; i++) {
-        for (int z = len - 1; z > i; z--) {
-            if (arr[i] + arr[z] == value) {
-                count += 1;
-            }
+  int count = 0;
+  for (int i = 0; i < len; i++) {
+    if (arr[i] <= value) {
+      for (int j = i + 1; j < len; j++) {
+        if (arr[i] + arr[j] == value) {
+          count++;
         }
+      }
     }
+  }
+  return count;
+}
+int binarsearch(int* arr, int len, int value, int left) {
+  int L = left, R = len - 1, count = 0;
+  while (L < R) {
+    int mid = L + (R - L) / 2;
+    if (arr[mid] == value && mid != left) {
+      count++;
+      int x = mid, xx = mid;
+      while (arr[++x] == value) {
+        count++;
+      }
+      while (arr[--xx] == value && xx > left) {
+         count++;
+       }
        return count;
+       } else if (arr[mid] > value) {
+           R = mid;
+       } else {
+           L = mid + 1;
+       }
+  }
+  return 0;
 }
 int countPairs3(int *arr, int len, int value) {
-    int count = 0;
-    for (int i = 0; i < len; i++) {
-        int  j = i + 1;
-        int f = len;
-        while (j < f) {
-            int c = (j + f) / 2;
-            if (arr[c] < (value - arr[i])) {
-                j = c + 1;
-            } else {
-                f = c;
-            }
-        }
-        while (arr[j] + arr[i] == value) {
-            count++;
-            j++;
-        }
-    }
-    return count;
+  int k = 0;
+  for (int i = 0; i < len; i++) {
+    k += binarsearch(arr, len, value - arr[i], i);
+  }
+  return k;
 }
